@@ -110,3 +110,6 @@ ENV/
 
 # mypy
 .mypy_cache/
+
+.vscode
+libs/sepconv/src/SeparableConvolution_kernel.o
