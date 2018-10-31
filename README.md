@@ -23,7 +23,7 @@ sudo easy_install3 pip
 
 ### Install GCC & friends:
 ```
-sudo apt-get install gcc libdpkg-perl python3-dev
+sudo apt-get install gcc libdpkg-perl python3-dev clang
 ```
 
 ### Install FFmpeg:
