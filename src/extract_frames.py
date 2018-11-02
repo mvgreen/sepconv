@@ -4,21 +4,24 @@
 
 import imageio
 import argparse
+import os
 from os.path import join
 from timeit import default_timer as timer
 from PIL import Image
 
 
-def extract_frames(video_path):
+def extract_frames(video_path, handler):
 
     def convert_frame(arg):
         return Image.fromarray(arg[:, :, :3], mode='RGB')
 
     video_reader = imageio.get_reader(video_path)
     fps = video_reader.get_meta_data().get('fps', None)
-    frames = [convert_frame(x) for x in video_reader]
 
-    return frames, fps
+    idx = 0
+    for x in video_reader:
+        handler(idx, convert_frame(x))
+        idx += 1
 
 
 if __name__ == '__main__':
@@ -30,14 +33,16 @@ if __name__ == '__main__':
 
     tick_t = timer()
 
-    print('===> Extracting frames...')
-    extracted_frames, _ = extract_frames(params.src)
+    if not os.path.exists(params.dest):
+        os.makedirs(params.dest)
 
-    print('===> Writing results...')
-    for i, frame in enumerate(extracted_frames):
+    def handleFrame(i, frame):
         file_name = '{:05d}.jpg'.format(i)
         file_path = join(params.dest, file_name)
         frame.save(file_path)
+        print("Stored frame %s" % file_path)
+
+    extract_frames(params.src, handleFrame)
 
     tock_t = timer()
 
